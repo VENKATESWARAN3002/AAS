@@ -51,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   chip: {
-    marginLeft: theme.spacing(1),
     fontWeight: 'bold',
   },
   gradeA: { backgroundColor: '#28a745', color: 'white' },

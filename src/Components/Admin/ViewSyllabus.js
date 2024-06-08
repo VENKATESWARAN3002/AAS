@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase'; // Adjust path as necessary
 import { collection, getDocs, doc } from 'firebase/firestore';
-import { Container, Typography, Box, CircularProgress, Paper, Grid, Tooltip, Card, CardActionArea, CardContent, ListItem, ListItemText } from '@mui/material';
+import { Container, Typography, Box, CircularProgress, Paper, Grid, Tooltip, Card, CardActionArea, CardContent, Collapse, ListItem, ListItemText } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
@@ -9,11 +9,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import SchoolIcon from '@mui/icons-material/School';
 
 const Root = styled(Container)(({ theme }) => ({
-  marginTop: theme.spacing(2),
-}));
-
-const Select = styled('div')(({ theme }) => ({
-  marginBottom: theme.spacing(1),
+  marginTop: theme.spacing(4),
 }));
 
 const ListItemStyled = styled(ListItem)(({ theme }) => ({
@@ -43,11 +39,12 @@ const ProgramPaper = styled(Paper)(({ theme }) => ({
 const ProgramCard = styled(Card)(({ theme, selected }) => ({
   fontWeight: 'bold',
   display: 'flex',
+  flexDirection: 'column',
   color: '#000',
   background: '#fff',
   transition: 'background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease',
   border: '2px solid transparent',
-  padding: theme.spacing(1),
+  padding: theme.spacing(2),
   '&:hover': {
     transform: 'scale(1.05)',
     boxShadow: '0 8px 20px rgba(0, 0, 0, 0.15)',
@@ -57,6 +54,25 @@ const ProgramCard = styled(Card)(({ theme, selected }) => ({
     color: '#fff',
     border: `2px solid ${theme.palette.primary.main}`,
   }),
+  ...(selected && {
+    zIndex: 10,
+  }),
+}));
+
+const ProgramCardContent = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(2),
+}));
+
+const ProgramTitle = styled(Typography)(({ theme }) => ({
+  flex: 1,
+  fontWeight: 'bold',
+  fontSize: '1.2rem',
+}));
+
+const SyllabusList = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(2),
 }));
 
 const ViewSyllabus = () => {
@@ -103,8 +119,8 @@ const ViewSyllabus = () => {
     fetchSyllabus();
   }, [selectedProgram]);
 
-  const handleProgramChange = (event) => {
-    setSelectedProgram(event.target.value);
+  const handleProgramChange = (programId) => {
+    setSelectedProgram(programId);
   };
 
   const getFileIcon = (fileName) => {
@@ -123,18 +139,52 @@ const ViewSyllabus = () => {
     <Root>
       <Typography variant="h4" gutterBottom>Syllabus</Typography>
       <ProgramPaper elevation={3}>
-        <Grid container spacing={2}>
+        <Grid container spacing={5}>
           {programs.map((program) => (
-            <Grid item xs={6} sm={6} md={12} key={program.id} sx={{ marginBottom:5}}>
+            <Grid item xs={12} key={program.id} marginBottom={10}>
               <Tooltip title="Click to select this program" arrow>
-                <CardActionArea onClick={() => setSelectedProgram(program.id)}>
+                <CardActionArea onClick={() => handleProgramChange(program.id)}>
                   <ProgramCard selected={selectedProgram === program.id}>
-                    <CardContent>
-                      <Typography variant="h6">
-                        {program.program_name}
-                      </Typography>
-                    </CardContent>
-                    <SchoolIcon />
+                    <ProgramCardContent>
+                      <SchoolIcon fontSize="large" />
+                      <ProgramTitle>{program.program_name}</ProgramTitle>
+                    </ProgramCardContent>
+                    <Collapse in={selectedProgram === program.id}>
+                      <SyllabusList>
+                        {loading ? (
+                          <Box display="flex" justifyContent="center" mt={2}>
+                            <CircularProgress />
+                          </Box>
+                        ) : (
+                          syllabusList.length > 0 ? (
+                            <Grid container spacing={2}>
+                              {syllabusList.map((syllabus, index) => (
+                                <Grid item xs={12} key={index}>
+                                  <Paper variant="outlined">
+                                    <ListItemStyled 
+                                      component="a" 
+                                      href={syllabus.syllabus_file} 
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <FileIcon sx={{ color: 'red' }}>
+                                        {getFileIcon(syllabus.syllabus_file_name)}
+                                      </FileIcon>
+                                      <ListItemTextStyled
+                                        primary={`Syllabus: ${syllabus.syllabus_file_name}`}
+                                        secondary={`Uploaded on: ${new Date(syllabus.upload_date).toLocaleDateString()}`}
+                                      />
+                                    </ListItemStyled>
+                                  </Paper>
+                                </Grid>
+                              ))}
+                            </Grid>
+                          ) : (
+                            <Typography>No syllabus available.</Typography>
+                          )
+                        )}
+                      </SyllabusList>
+                    </Collapse>
                   </ProgramCard>
                 </CardActionArea>
               </Tooltip>
@@ -142,32 +192,6 @@ const ViewSyllabus = () => {
           ))}
         </Grid>
       </ProgramPaper>
-      {loading ? (
-        <Box display="flex" justifyContent="center" mt={4}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Grid container spacing={2} mt={4}>
-          {syllabusList.map((syllabus, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Paper variant="outlined">
-                <ListItemStyled 
-                  component="a" 
-                  href={syllabus.syllabus_file} 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FileIcon sx={{color:'red'}} >{getFileIcon(syllabus.syllabus_file_name)}</FileIcon>
-                  <ListItemTextStyled
-                    primary={`Syllabus: ${syllabus.syllabus_file_name}`}
-                    secondary={`Uploaded on: ${new Date(syllabus.upload_date).toLocaleDateString()}`}
-                  />
-                </ListItemStyled>
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
-      )}
     </Root>
   );
 };

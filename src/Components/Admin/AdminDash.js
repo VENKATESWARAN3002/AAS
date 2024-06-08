@@ -12,6 +12,7 @@ import '@fontsource/poppins';
 import CourseStatistics from './Course/CourseStatistics';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase';
+import AdminProgramStatistics from './Program/Admin ProgramProgramStatistics';
 
 Chart.register(LineElement, PointElement, LineController, CategoryScale, LinearScale, Title, ChartTooltip, Legend);
 
@@ -199,6 +200,30 @@ const AdminDash = () => {
               </CardActionArea>
             </Card>
           </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card>
+              <CardActionArea component={Link} to="/admin/Program">
+                <CardContent sx={{ textAlign: 'center' }}>
+                  <SchoolIcon sx={{ fontSize: 40, color: 'warning.main' }} />
+                  <Typography variant="h5" component="div">
+                    Program Management
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card>
+              <CardActionArea component={Link} to="/admin/SemPerf">
+                <CardContent sx={{ textAlign: 'center' }}>
+                  <SchoolIcon sx={{ fontSize: 40, color: 'warning.main' }} />
+                  <Typography variant="h5" component="div">
+                    Student Performance Management
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
           <Grid item xs={12} sm={6} md={6}>
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
@@ -214,6 +239,13 @@ const AdminDash = () => {
             <Card>
               <CardContent sx={{ textAlign: 'center' }}>
                 <CourseStatistics />
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={20} sm={10} md={10}>
+            <Card>
+              <CardContent sx={{ textAlign: 'center' }}>
+                <AdminProgramStatistics />
               </CardContent>
             </Card>
           </Grid>

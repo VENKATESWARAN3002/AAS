@@ -562,9 +562,11 @@ a {
 
 .btn {
     background: #fffffff3;
-    color: #212121;
+    color: #A8422D;
     padding: 14px 25px;
     font-size: 16px;
+    font-family: Poppins;
+    font-weight: bold;
     border-radius: 30px;
     cursor: pointer;
     border: 0;

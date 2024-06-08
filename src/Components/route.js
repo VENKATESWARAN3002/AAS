@@ -19,16 +19,17 @@ import Home from "./Home";
 import RegistrationSummary from "./Admin/CourseRegistration/RegistrationSummary";
 import AcademicPerformance from "./Student/AcademicPerformance";
 import AdminPanel from "./Admin/CourseRegistration/AdminPanel";
-import UploadSyllabus from "./Admin/UploadSyllabus";
+import UploadSyllabus from "./Admin/Program/UploadSyllabus";
 import ViewSyllabus from "./Admin/ViewSyllabus";
+import ProgramManagement from "./Admin/Program/ProgramManagement";
 
 
 const Rout = () => {
     return (
         <>
             <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/home" element={<Home/>} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<Home/>} />
                 <Route path='/admin/login' element={<AdminLogin />} />
                 <Route path="/admin/dash" element={<AdminDash/>}/>
                 <Route path="/admin/viewStudent" element ={<ViewStudent/>}/>
@@ -48,6 +49,7 @@ const Rout = () => {
                 <Route path='/student/cregister' element={<StudentRegistration />} />
                 <Route path='/student/cregister/print' element={<RegistrationSummary />} />
                 <Route path='/dash/syllabus' element={<ViewSyllabus/>} />
+                <Route path='/admin/Program' element={<ProgramManagement/>} />
             </Routes>
         </>
     )
